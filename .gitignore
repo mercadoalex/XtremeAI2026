@@ -1,1 +1,18 @@
+# Internal working files: kept locally, never published
 speaker-guidelines.md
+script.md
+talk-outline.md
+socratic-observation-bridge.md
+
+# Third-party or previous-talk material (not ours to redistribute)
+SocraticQuestioning2006.pdf
+SCDCO26_AlejandroMercado.pptx
+images/socratic-method.png
+
+# Unused originals (the deck uses the optimized versions)
+images/loop.png
+images/blazeplatform_logo_whitebackground.png
+
+# OS noise
+.DS_Store
+**/.DS_Store
