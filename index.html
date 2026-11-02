@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Socratic Method in AI: a tale from the trenches</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/monokai.css">
+  <style>
+    .reveal h1, .reveal h2, .reveal h3, .reveal h4 { text-transform: none; }
+    .reveal ul, .reveal ol { display: block; }
+    /* XtremeAI background (relative path, keep the backgrounds/ folder next to this file) */
+    html, body { background: #fff !important; }
+    .reveal-viewport {
+      background: #fff url("backgrounds/xtremeai_zoom_background.png") center / cover no-repeat !important;
+      position: relative;
+    }
+    /* White veil over the pattern. Opacity = how muted the background is
+       (raise to fade more, lower to show more). */
+    .reveal-viewport::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      opacity: 0.82;
+      transition: opacity 0.9s ease;
+      pointer-events: none;
+    }
+    /* Title slide: full-strength background (no veil); the first advance fades it out */
+    .reveal-viewport.intro::before { opacity: 0; }
+    /* Solid panel on the title slide so the vivid logos never show through the text */
+    .reveal-viewport.intro .reveal .slides section:not(.stack) { background: #fff; }
+    /* Title slide panel: ~15% taller at the top and ~15% at the bottom (panel is ~365px tall, so ~55px each side) */
+    .reveal .slides section.title-slide:not(.stack) { padding-top: calc(1em + 55px); padding-bottom: calc(1em + 55px); }
+    /* Translucent panel so text stays readable over the logo pattern */
+    .reveal .slides section:not(.stack) {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 18px;
+      padding: 1em 1.5em;
+      box-shadow: 0 6px 30px rgba(60, 20, 120, 0.15);
+      box-sizing: border-box;
+    }
+    .reveal h2, .reveal h3, .reveal h4 { color: #1a1033; }
+    .reveal h3.subtitle { color: #b020c8; }   /* title slide subtitle, same purple as the deck accents */
+    .reveal a, .reveal b { color: #b020c8; }
+    .muted { color: #555; font-size: 0.65em; }
+    .cols { display: flex; gap: 2rem; align-items: flex-start; }
+    .cols > div { flex: 1; }
+    .about { align-items: center; justify-content: center; gap: 2.5rem; margin-top: 0.4em; }
+    /* Image + text slides: fixed image column, text takes ALL the remaining width.
+       ".cols > .x" is needed to outrank the generic ".cols > div { flex: 1 }" rule. */
+    .cols > .about-photo { flex: 0 0 300px; }
+    .about-photo img {
+      display: block; width: 300px; height: 405px; object-fit: cover;
+      border-radius: 16px; margin: 0;
+      box-shadow: 0 6px 24px rgba(60, 20, 120, 0.25);
+    }
+    .cols > .about-text { flex: 1 1 0; text-align: left; }
+    .about-text h4 { text-align: left; margin: 0 0 0.3em; font-size: 1.1em; }
+    .about-text ul { margin: 0 0 0 0.6em; font-size: 0.92em; }
+    .about-text li { margin-bottom: 0.45em; }
+    .credentials { font-size: 0.8em; font-weight: 600; color: #b020c8; margin: 0 0 0.2em; }
+    .links { font-size: 0.7em; }
+    .bubble { border-radius: 12px; padding: 0.5em 0.8em; margin: 0.4em 0; text-align: left; font-size: 0.75em; }
+    .student { background: #1f3a5f; color: #fff; }
+    .tutor { background: #3a2f5f; color: #fff; }
+    .obs { background: #0f5132; color: #fff; font-family: monospace; }
+    .bubble b { color: #fff; }
+    .todo { color: #c26a00; }
+    .big { font-size: 1.3em; }
+    .left { text-align: left; }
+    .step { font-size: 0.55em; letter-spacing: 0.08em; text-transform: uppercase; color: #b020c8; margin: 0; }
+    .status { text-align: left; font-size: 0.85em; }
+    .status li { margin-bottom: 0.7em; }
+    .loop-slide { align-items: center; gap: 1.5rem; }
+    .cols > .loop-image { flex: 0 0 640px; }
+    .loop-image img { display: block; width: 640px; height: auto; margin: 0; }
+    .cols > .loop-status { flex: 1 1 0; text-align: left; }
+    .small ul, .small ol { font-size: 0.85em; }
+    .socrates-slide { align-items: center; gap: 2rem; }
+    .cols > .socrates-photo { flex: 0 0 330px; }
+    .socrates-photo img {
+      display: block; width: 330px; height: 400px; object-fit: cover; object-position: 55% 50%;
+      border-radius: 16px; margin: 0; box-shadow: 0 6px 24px rgba(60, 20, 120, 0.25);
+    }
+    .cols > .socrates-text { flex: 1 1 0; text-align: left; }
+    .socrates-text .lead { font-size: 0.95em; margin: 0 0 0.5em; font-style: italic; }
+    .socrates-text ul { font-size: 0.85em; margin-left: 0.8em; }
+    .socrates-text li { margin-bottom: 0.45em; }
+    .socrates-text li.hl { background: rgba(176, 32, 200, 0.10); border-radius: 8px; padding: 0.1em 0.4em; margin-left: -0.4em; }
+    .logo-slide { align-items: center; gap: 2rem; }
+    .cols > .logo-text { flex: 1 1 0; text-align: left; }
+    .logo-text ul { font-size: 0.8em; margin-left: 0.8em; }
+    .logo-text li { margin-bottom: 0.35em; }
+    .url { font-size: 0.8em; margin: 0.5em 0 0 0.8em; }
+    .wip {
+      display: inline-block; margin-left: 0.6em; padding: 0.15em 0.75em; border-radius: 999px;
+      background: rgba(194, 106, 0, 0.12); color: #8a4b00; font-size: 0.75em; font-weight: 600;
+    }
+    .cols > .logo-image { flex: 0 0 380px; }
+    .logo-image img {
+      display: block; width: 380px; height: auto; margin: 0;
+      mix-blend-mode: multiply;   /* the logo's off-white background blends into the white panel */
+    }
+    /* Two aligned columns: heading and bullets share the same left edge, thin divider between columns */
+    .cols.aligned { gap: 2.5rem; align-items: stretch; }
+    .cols.aligned h4 { margin: 0 0 0.6em; color: #1a1033; }
+    .cols.aligned ul { list-style: none; margin: 0; padding: 0; font-size: 0.95em; }
+    .cols.aligned li { position: relative; padding-left: 1.1em; margin-bottom: 0.5em; }
+    .cols.aligned li::before { content: "\2022"; position: absolute; left: 0; color: #b020c8; font-weight: 700; }
+    .cols.aligned > div + div { border-left: 3px solid rgba(176, 32, 200, 0.25); padding-left: 2rem; }
+    /* Research chips: purple pills instead of a gray footnote */
+    .chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6em; margin: 0.8em 0 0; }
+    .chips span {
+      background: rgba(176, 32, 200, 0.10); color: #8a1aa0; font-weight: 600;
+      border-radius: 999px; padding: 0.3em 0.9em; font-size: 0.62em;
+    }
+    /* eBPF definition card: slides in from the right on a click (reveal.js fragment) */
+    .reveal .fragment.slide-in-right {
+      transform: translateX(120%);
+      transition: transform 0.6s ease, opacity 0.4s ease;
+    }
+    .reveal .fragment.slide-in-right.visible { transform: translateX(0); }
+    .ebpf-card {
+      text-align: left; margin: 0.6em 0 0;
+      background: rgba(176, 32, 200, 0.08);
+      border-left: 6px solid #b020c8; border-radius: 12px;
+      padding: 0.6em 1em; box-shadow: 0 4px 16px rgba(60, 20, 120, 0.12);
+    }
+    .ebpf-card p { margin: 0; font-size: 0.62em; line-height: 1.35; }
+    .ebpf-card .ebpf-title { font-size: 0.75em; font-weight: 700; color: #1a1033; margin-bottom: 0.3em; }
+    .ebpf-card .ebpf-title span { color: #8a1aa0; font-weight: 600; margin-left: 0.5em; }
+    /* Explain slide: three rule cards */
+    .io { font-size: 0.8em; margin: 0.4em 0 0.8em; }
+    .rules { display: flex; gap: 1.2rem; margin-top: 0.4em; }
+    .rule {
+      flex: 1; text-align: center;
+      background: rgba(176, 32, 200, 0.07); border: 2px solid rgba(176, 32, 200, 0.35);
+      border-radius: 16px; padding: 0.9em 0.6em;
+    }
+    .rule svg {
+      width: 64px; height: 64px; stroke: #b020c8; fill: none;
+      stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .reveal .rule h4 { font-size: 0.72em; margin: 0.5em 0 0.2em; text-transform: none; }
+    .rule p { font-size: 0.55em; margin: 0; color: #444; }
+    /* References slide: list on the left, book cover on the right, free-excerpt link at the bottom */
+    .refs-slide { align-items: center; gap: 2rem; }
+    .cols > .refs-text { flex: 1 1 0; text-align: left; }
+    .refs-text ul { font-size: 0.6em; margin: 0 0 0 0.6em; }
+    .refs-text li { margin-bottom: 0.5em; line-height: 1.3; }
+    .cols > .refs-cover { flex: 0 0 230px; text-align: center; }
+    .refs-cover img {
+      display: block; width: 230px; height: auto; margin: 0 auto;
+      border-radius: 6px; box-shadow: 0 6px 20px rgba(60, 20, 120, 0.3);
+    }
+    .refs-cover .credit { font-size: 0.4em; color: #555; margin: 0.6em 0 0; }
+    .reflink { font-size: 0.6em; margin: 0.8em 0 0; text-align: center; }
+    .cols pre { width: 100%; }
+    .cols pre code { font-size: 0.8em; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="slides">
+
+    <!-- 1. Title (0:00-0:30) -->
+    <section class="title-slide">
+      <h2>The Socratic Method in AI</h2>
+      <h3 class="subtitle">A tale from the trenches</h3>
+      <p class="muted">XtremeAI 2026 · November 24, 2026</p>
+      <p class="muted">Alejandro Mercado · DevOps &amp; Automation Platform Engineer</p>
+      <aside class="notes">
+        [0:00-0:30] Slide 1 of 19. Greet, say the title, promise one pattern for Monday. Smile, look at the camera, speak slowly.
+        Full text: script.md.
+      </aside>
+    </section>
+
+    <!-- 2. Speaker (0:30-1:00) -->
+    <section>
+      <h2>Alejandro Mercado</h2>
+      <p class="credentials">IBM Champion &nbsp;|&nbsp; AWS Community Builder &nbsp;|&nbsp; Kiro Ambassador</p>
+      <div class="cols about">
+        <div class="about-photo">
+          <img src="images/headshot.png" alt="Alejandro Mercado">
+        </div>
+        <div class="about-text">
+          <ul>
+            <li>DevOps &amp; Automation Platform Engineer</li>
+            <li>25+ years across a wide range of IT technologies and systems</li>
+            <li>Today: integrating AI services and AI-assisted development into new systems</li>
+            <li>Passionate about EdTech: using technology to improve learning</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        [0:30-1:05] 30 seconds max. Role, 25+ years, IBM Champion, AWS Community Builder, Kiro Ambassador. Why you care: EdTech. This is a personal project.
+        Move on quickly: the audience wants takeaways, not biography.
+      </aside>
+    </section>
+
+    <!-- 3. Glass house (1:00-1:45) -->
+    <section data-auto-animate>
+      <h2>Would you build a glass house<br>during an 8.0 earthquake?</h2>
+      <aside class="notes">
+        [1:05-1:45] Ask the question, then PAUSE 3 seconds. Do not fill the silence.
+        "You can't build something fragile on a ground that moves." Optional chat prompt: worst hallucination you have seen.
+      </aside>
+    </section>
+
+    <!-- 4. The weight of distrust (1:45-2:30) -->
+    <section>
+      <h3>The weight of distrust</h3>
+      <ul>
+        <li class="fragment">You know what it feels like to build on uncertain foundations</li>
+        <li class="fragment">One hallucination can ruin a critical deployment</li>
+        <li class="fragment">That fear is not a flaw. It is a logical response to a technology that often prioritizes <b>fluency over truth</b>.</li>
+      </ul>
+      <aside class="notes">
+        [1:45-2:40] 3 CLICKS, one per bullet. Example for the first: an API that doesn't exist, a flag that was never in the docs.
+        Slow down on "fluency over truth" (purple). Close with: how do we build something we can trust?
+      </aside>
+    </section>
+
+    <!-- 5. Transition (2:30-3:15) -->
+    <section>
+      <h2>Answers are cheap.<br>Understanding isn't.</h2>
+      <p class="fragment big"><b>What if the AI asked instead of told?</b></p>
+      <aside class="notes">
+        [2:40-3:35] "Answers are cheap. Understanding isn't." Illusion of competence. Ask them to think of the last time an AI gave a right answer and they learned nothing. PAUSE.
+        1 CLICK: "What if the AI asked instead of told?" Pause. "That question is the whole talk."
+      </aside>
+    </section>
+
+    <!-- 5b. The Socratic method (the conference title; ~1 min) -->
+    <section>
+      <h3>The Socratic method</h3>
+      <div class="cols socrates-slide">
+        <div class="socrates-photo">
+          <img src="images/socrates.jpg" alt="Statue of Socrates">
+        </div>
+        <div class="socrates-text">
+          <p class="lead">Learn by answering questions, not by receiving answers.</p>
+          <ul>
+            <li><b>Clarify:</b> What do you mean by <i>scalable</i>?</li>
+            <li><b>Assumptions:</b> What are you assuming about the input?</li>
+            <li class="hl"><b>Evidence:</b> How do you know that?</li>
+            <li><b>Perspectives:</b> What would someone who disagrees say?</li>
+            <li><b>Implications:</b> If that's true, what follows?</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        [3:35-4:55] Socrates, more than 2,000 years ago, a midwife of ideas. Name two or three question types, then land on EVIDENCE (highlighted): "How do you know that?"
+        Example: "my program is slow" - did you measure it? Keep this question for the whole talk.
+        Short on time: skip the list of types.
+        BEFORE PUBLISHING: confirm license/credit of images/socrates.jpg.
+      </aside>
+    </section>
+
+    <!-- 6. Why models guess (3:15-5:30) -->
+    <section>
+      <h3>Why models guess, and why questions help</h3>
+      <div class="cols left small aligned">
+        <div>
+          <h4>Why they hallucinate</h4>
+          <ul>
+            <li>They predict the next token, not truth</li>
+            <li>No grounding without an external check</li>
+            <li>Fluent even when uncertain</li>
+          </ul>
+        </div>
+        <div>
+          <h4>What helps</h4>
+          <ul>
+            <li>Ground answers in evidence</li>
+            <li>Ask verification questions</li>
+            <li>Make reasoning explicit</li>
+          </ul>
+        </div>
+      </div>
+      <p class="chips">
+        <span>Socratic prompting</span>
+        <span>Multi-agent debate</span>
+        <span>Chain-of-Verification</span>
+        <span>Self-Refine</span>
+      </p>
+      <aside class="notes">
+        [4:55-6:15] Models predict the next token, not the truth. Sounds fluent even when uncertain. What helps: evidence, verification questions, explicit reasoning.
+        Example: ask how many times a program reads a file without running it: confident number, but a guess. Do NOT read the four chips.
+        Short on time: skip the research sentence.
+      </aside>
+    </section>
+
+    <!-- 7. Blaze Platform (5:30-7:00) -->
+    <section>
+      <h3>The project: Blaze Platform</h3>
+      <div class="cols logo-slide">
+        <div class="logo-text">
+          <ul>
+            <li>AI-based learning, agnostic to the technology taught</li>
+            <li>Verticals: eBPF · COBOL · Fortran · and more</li>
+            <li>Hands-on: guided exercises and challenges</li>
+            <li>Observability built in: each vertical brings its own probes</li>
+            <li>A shared contract: observation, learner profile, tutor</li>
+          </ul>
+          <p class="url">
+            <a href="https://blazebpf.com/">blazebpf.com</a>
+            <span class="wip">Work in progress · not production ready yet</span>
+          </p>
+        </div>
+        <div class="logo-image">
+          <img src="images/blazeplatform_logo_cropped.png" alt="Blaze Platform logo">
+        </div>
+      </div>
+      <aside class="notes">
+        [6:15-7:40] Started as an eBPF platform (write, compile, run, guided exercises). Then generalized: agnostic to the technology. Verticals: eBPF, COBOL, Fortran, more. Shared contract: observation, learner profile, tutor.
+        Say: work in progress, NOT production ready yet. Only public names: no hosts, IPs or bucket names.
+        TODO: fix the logo tagline ("...these dots").
+      </aside>
+    </section>
+
+    <!-- 8. Thesis (7:00-8:00) -->
+    <section>
+      <h2>Don't let the model<br>guess what happened.</h2>
+      <ul class="left">
+        <li class="fragment" data-fragment-index="0"><b>Observe</b> it, with <b>eBPF</b>.</li>
+        <li class="fragment" data-fragment-index="2">Let the model <b>interpret</b> it.</li>
+        <li class="fragment" data-fragment-index="3">Let a tutor <b>ask</b> about it.</li>
+      </ul>
+      <div class="ebpf-card fragment slide-in-right" data-fragment-index="1">
+        <p class="ebpf-title">eBPF <span>Extended Berkeley Packet Filter</span></p>
+        <p>A Linux kernel technology that allows developers to run sandboxed programs in a privileged
+        kernel context without modifying kernel source code or loading kernel modules.</p>
+      </div>
+      <aside class="notes">
+        [7:40-8:40] 4 CLICKS: (1) Observe it, with eBPF. (2) the eBPF card slides in from the right: one plain sentence, do not read it. (3) interpret. (4) ask.
+        Key line: "Observe, interpret, ask. Everything else is one of these three verbs."
+      </aside>
+    </section>
+
+    <!-- 9. Observe (8:00-10:00) -->
+    <section>
+      <p class="step">Step 1</p>
+      <h3>Observe: facts from the kernel</h3>
+      <div class="cols left small">
+        <div>
+          <ul>
+            <li>eBPF probes attach to the running program</li>
+            <li>Syscalls · performance · memory · security</li>
+            <li>Runs in a sandbox with resource limits</li>
+            <li>Result: a typed <code>ObservationResult</code></li>
+          </ul>
+        </div>
+        <div>
+          <pre><code class="language-json" data-trim>
+{
+  "compilationSuccess": true,
+  "executionDurationMs": 412,
+  "syscallSummary": {
+    "read": {
+      "count": 1200,
+      "totalElapsedUs": 340000
+    }
+  },
+  "memory": { "peakUsageBytes": 24576 },
+  "security": { "flaggedCount": 0 }
+}
+          </code></pre>
+          <p class="muted">Trimmed. Illustrative values.</p>
+        </div>
+      </div>
+      <aside class="notes">
+        [8:40-10:35] Four kinds of facts: system calls, performance, memory, security. Walk through a student reading a file. Sandbox with resource limits.
+        The JSON is ILLUSTRATIVE: say so (or replace it with a real one and drop the label). Point at it once, then back to the camera.
+        Key line: "The model never has to guess what the program did. The kernel already told us."
+      </aside>
+    </section>
+
+    <!-- 10. Explain (10:00-11:30) -->
+    <section>
+      <p class="step">Step 2</p>
+      <h3>Explain: the model interprets, it doesn't guess</h3>
+      <p class="io"><b>In:</b> source code + observed facts &nbsp;&rarr;&nbsp; <b>Out:</b> an explanation grounded in those facts</p>
+      <div class="rules">
+        <div class="rule">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="26" width="8" height="14" rx="2"/><rect x="20" y="16" width="8" height="24" rx="2"/><rect x="32" y="8" width="8" height="32" rx="2"/></svg>
+          <h4>Only measured figures</h4>
+          <p>Every number comes from the data</p>
+        </div>
+        <div class="rule">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 8h16l18 18-16 16L8 24z"/><circle cx="16" cy="16" r="3"/></svg>
+          <h4>Estimates labeled</h4>
+          <p>A projection says so, with its assumption</p>
+        </div>
+        <div class="rule">
+          <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="17"/><path d="M18 19c0-4 3-6 6-6s6 2 6 5c0 4-6 4-6 9"/><circle cx="24" cy="35" r="1.6" style="fill:#b020c8"/></svg>
+          <h4>Ask, don't guess</h4>
+          <p>Missing data? Ask the student</p>
+        </div>
+      </div>
+      <aside class="notes">
+        [10:35-12:15] Input: source code + a compact summary of the facts. Three rules: only measured figures, estimates labeled, ask don't guess.
+        Contrast: ungrounded "90 percent faster" vs grounded "1,200 read calls of one byte... measure again".
+        STATUS CHECK: present the rules as implemented only if true on Nov 24; otherwise "the rules we are putting in". If it fails: fall back, never invent.
+      </aside>
+    </section>
+
+    <!-- 11. Ask (11:30-13:30) -->
+    <section>
+      <p class="step">Step 3</p>
+      <h3>Ask: the tutor adapts to you</h3>
+      <ul>
+        <li>Reads how you answer: correctness · time · error type</li>
+        <li>Learner profile: mastered vs. struggling concepts</li>
+        <li>Hint ladder: up to 5 levels, never the solution first</li>
+        <li>Not "next, next, next" through a syllabus</li>
+      </ul>
+      <aside class="notes">
+        [12:15-14:00] Signals: correctness, time, error type. Profile: mastered/struggling concepts, success rate, motivation. Hint ladder up to 5 levels (illustrative file-reading example).
+        Stuck: raises the hint. Success: celebrates. Caution: response time is a noisy signal.
+        Short on time: skip the five-level example. Do not claim features that are not live.
+      </aside>
+    </section>
+
+    <!-- 12. The unified loop (13:30-14:30) -->
+    <section>
+      <h3>One dialogue</h3>
+      <div class="cols loop-slide">
+        <div class="loop-image">
+          <img src="images/loop_web.png" alt="Loop: student code, observe with eBPF, ask, explain, then change code and observe again">
+        </div>
+        <div class="loop-status">
+          <ul class="status">
+            <li><b>Built:</b> observation, explainer, tutor with profile and hints</li>
+            <li><b>Connecting now:</b> the tutor asks about what was measured</li>
+          </ul>
+        </div>
+      </div>
+      <aside class="notes">
+        [14:00-15:10] The loop closes: the second measurement is the proof. Status with confidence: BUILT = observation, explainer, tutor with profile and hints. CONNECTING NOW = the tutor asking about what was measured.
+        Next: measure whether learners need fewer hints over time. Only claim what is true on Nov 24.
+      </aside>
+    </section>
+
+    <!-- 13. Example dialogue (14:30-16:00) -->
+    <section>
+      <h3>What it looks like</h3>
+      <div class="bubble student"><b>Student:</b> My program is slow when it reads the file.</div>
+      <div class="bubble tutor"><b>Tutor:</b> How many times do you think it asks the kernel to read?</div>
+      <div class="bubble student"><b>Student:</b> A few dozen?</div>
+      <div class="bubble obs">measured: read called 1,200 times, 1 byte each</div>
+      <div class="bubble tutor"><b>Tutor:</b> What does that say about how the file is being read?</div>
+      <p class="muted">Illustrative example.</p>
+      <aside class="notes">
+        [15:10-16:40] Two voices: student and tutor. After "a few dozen?" invite the audience to guess in the chat: PAUSE 5 seconds (this is the predict step, live).
+        Then the measured fact (1,200 calls, 1 byte each), the tutor's question, and the optional "What changed, and why?". ILLUSTRATIVE: say so, or replace with a real anonymized transcript.
+      </aside>
+    </section>
+
+    <!-- 14. Trenches (16:00-18:00) -->
+    <section>
+      <h3>From the trenches</h3>
+      <ul class="small">
+        <li class="fragment">Asking a model to "quantify improvements" invites invented numbers. <b>Cite only measured figures.</b></li>
+        <li class="fragment">An explainer answers. A tutor asks. They have to be <b>one dialogue</b>.</li>
+        <li class="fragment">Response time is a <b>noisy signal</b>.</li>
+        <li class="fragment">Running student code is a <b>security problem</b>: sandbox and limits.</li>
+      </ul>
+      <p class="muted"><span class="todo">[TODO: one war story of your own]</span></p>
+      <aside class="notes">
+        [16:40-18:30] 4 CLICKS: (1) invented numbers, (2) one dialogue, (3) noisy signal, (4) security of student code.
+        Then YOUR WAR STORY, 45-60 s: what happened, why it surprised you, what you changed. TODO.
+        Short on time: only bullets 1 and 2 and a shorter story.
+      </aside>
+    </section>
+
+    <!-- 15. Pattern for Monday (18:00-19:00) -->
+    <section>
+      <h3>A pattern you can copy on Monday</h3>
+      <pre><code class="language-text" data-trim>
+1. PREDICT   Ask what they expect to happen.
+2. OBSERVE   Measure what really happened.
+3. COMPARE   Ask what differs, and why.
+4. EXPLAIN   Only now, grounded in the measurement.
+      </code></pre>
+      <p class="muted">Works for any technology you can measure.</p>
+      <aside class="notes">
+        [18:30-19:25] Predict, Observe, Compare, Explain. Slow down: this is the takeaway. Examples: unit tests (which of these 3 tests fails?) and performance (which function is the bottleneck?).
+        Key line: "Anything you can measure, you can teach this way."
+      </aside>
+    </section>
+
+    <!-- 16. Takeaways (19:00-19:30) -->
+    <section>
+      <h3>Takeaways</h3>
+      <ol>
+        <li>Observe before you explain</li>
+        <li>Ask before you answer</li>
+        <li>Numbers come from measurements, never from the model</li>
+        <li>Personalize from how people answer</li>
+      </ol>
+      <aside class="notes">
+        [19:25-20:00] Four takeaways, then Socrates' question: "How do you know that? Now you can measure it." Add the week challenge: pick something you can measure and ask learners to predict it first.
+        Land on time. No new content.
+      </aside>
+    </section>
+
+    <!-- 17. References (quick pass or skip) -->
+    <section>
+      <h3>References</h3>
+      <div class="cols refs-slide">
+        <div class="refs-text">
+          <ul>
+            <li>Chang, E. Y. (2023). <i>Prompting Large Language Models With the Socratic Method.</i> arXiv:2303.08769</li>
+            <li>Chang, E. Y. (2024). <i>SocraSynth: Multi-LLM Reasoning with Conditional Statistics.</i> arXiv:2402.06634</li>
+            <li>Du, Y. et al. (2023). <i>Improving Factuality and Reasoning in Language Models through Multiagent Debate.</i> arXiv:2305.14325</li>
+            <li>Dhuliawala, S. et al. (2023). <i>Chain-of-Verification Reduces Hallucination in Large Language Models.</i> arXiv:2309.11495</li>
+            <li>Madaan, A. et al. (2023). <i>Self-Refine: Iterative Refinement with Self-Feedback.</i> arXiv:2303.17651</li>
+            <li>Paul, R. &amp; Elder, L. (2006). <i>The Thinker's Guide to the Art of Socratic Questioning.</i> Foundation for Critical Thinking.</li>
+          </ul>
+        </div>
+        <div class="refs-cover">
+          <img src="images/socratic_questioning.png" alt="Cover of The Thinker's Guide to the Art of Socratic Questioning">
+          <p class="credit">Cover: &copy; Foundation for Critical Thinking</p>
+        </div>
+      </div>
+      <p class="reflink">Free excerpt from the publisher:
+        <a href="https://www.criticalthinking.org/files/SocraticQuestioning2006.pdf">criticalthinking.org/files/SocraticQuestioning2006.pdf</a>
+      </p>
+      <aside class="notes">
+        Skip or advance quickly, or point at the cover: "if you read one thing, read this guide". The deck will be shared, so people can read the references later.
+        The link is the publisher's free excerpt (10 pages of a guide of about 90), not the full book: say "free excerpt", not "free book".
+        What each reference is about: script.md, section 6.
+      </aside>
+    </section>
+
+    <!-- 18. Q&A (final slide, stays on screen during questions) -->
+    <section>
+      <h1>Q&amp;A</h1>
+      <p><i>What question would you want your AI to ask you?</i></p>
+      <p class="links">
+        <a href="https://www.linkedin.com/in/alexmarket/">linkedin.com/in/alexmarket</a>
+        &nbsp;·&nbsp;
+        <a href="https://alexmarket.medium.com/">alexmarket.medium.com</a>
+      </p>
+      <aside class="notes">
+        [20:00-25:00] Keep this slide up during Q&A. Ask the closing question: what question would you want your AI to ask you?
+        If you don't know an answer, say so and give your best guess. Never say "eliminates hallucinations". Prepared answers: script.md, section 2. Backup question if the chat is quiet: "isn't this just a chatbot?"
+      </aside>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+<script>
+  Reveal.initialize({
+    width: 1280,
+    height: 720,
+    hash: true,
+    hashOneBasedIndex: true,   // URL numbering starts at 1, so "#/10" is slide "10 / 19"
+    slideNumber: 'c/t',
+    plugins: [RevealNotes, RevealHighlight]
+  });
+
+  // Vivid background only on the title slide; muted on every other slide.
+  function syncIntro() {
+    const { h, v } = Reveal.getIndices();
+    document.body.classList.toggle('intro', h === 0 && v === 0);
+  }
+  Reveal.on('ready', syncIntro);
+  Reveal.on('slidechanged', syncIntro);
+</script>
+</body>
+</html>
