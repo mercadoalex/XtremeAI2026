@@ -467,11 +467,11 @@
         <li class="fragment">An explainer answers. A tutor asks. They have to be <b>one dialogue</b>.</li>
         <li class="fragment">Response time is a <b>noisy signal</b>.</li>
         <li class="fragment">Running student code is a <b>security problem</b>: sandbox and limits.</li>
+        <li class="fragment"><b>The boring failure:</b> a missing timeout froze our tutor. A frozen tutor teaches nothing.</li>
       </ul>
-      <p class="muted"><span class="todo">[TODO: one war story of your own]</span></p>
       <aside class="notes">
-        [16:40-18:30] 4 CLICKS: (1) invented numbers, (2) one dialogue, (3) noisy signal, (4) security of student code.
-        Then YOUR WAR STORY, 45-60 s: what happened, why it surprised you, what you changed. TODO.
+        [16:40-18:30] 5 CLICKS: (1) invented numbers, (2) one dialogue, (3) noisy signal, (4) security of student code, (5) the boring failure.
+        Click 5 = your war story (about 45 s): the AI assistant froze whenever the backend was slow. The request had no timeout, the loading flag never switched off, all buttons stayed disabled until a page reload. Fix: time out (about 30 s), reset the state, say clearly the tutor is temporarily unavailable. Add how YOU found it. Full text: script.md, slide 15.
         Short on time: only bullets 1 and 2 and a shorter story.
       </aside>
     </section>
