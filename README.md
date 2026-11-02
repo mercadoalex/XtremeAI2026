@@ -38,6 +38,18 @@ Topics: AI reasoning, hallucination mitigation, pedagogical AI, observability an
 | Date | Tuesday, November 24, 2026 |
 | Time | 06:35 GMT (00:35 in Mexico City) |
 | Format | 20-minute talk + 5-minute Q&A, online |
+| Website | [xtremeai.dev/2026](https://xtremeai.dev/2026/) |
+
+## Speaking at XtremeAI 2026
+
+XtremeAI is an online conference on Generative AI in software development and AI agents, with speakers from all over the world.
+
+<p align="center">
+  <a href="https://xtremeai.dev/2026/"><img src="images/xtremeai-site-home.png" alt="XtremeAI 2026 online conference home page" width="48%"></a>
+  <a href="https://xtremeai.dev/2026/speakers/"><img src="images/xtremeai-site-speakers.png" alt="XtremeAI 2026 speakers page, including Alejandro Mercado" width="48%"></a>
+</p>
+
+<p align="center"><sub>Left: conference home page. Right: speakers page. Source: <a href="https://xtremeai.dev/2026/">xtremeai.dev/2026</a></sub></p>
 
 ## References
 
