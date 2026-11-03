@@ -187,6 +187,17 @@
     .cols > .about-photo { position: relative; }
     .illus-row { display: flex; justify-content: center; align-items: center; gap: 1.5em; }
     .illus-row .muted, .illus-row .ai-voice { margin: 0.3em 0 0; }
+    /* Slide 12: a thin line crosses out "next, next, next" about a second after the slide appears */
+    .strike { position: relative; display: inline-block; }
+    .strike::after {
+      content: ""; position: absolute; left: -2%; right: -2%; top: 56%; height: 3px; border-radius: 2px; background: #b020c8;
+      transform: rotate(-1.5deg) scaleX(0); transform-origin: left center;
+    }
+    .reveal section.present .strike::after { animation: strikeDraw 0.7s ease-out 1.2s forwards; }
+    @keyframes strikeDraw { to { transform: rotate(-1.5deg) scaleX(1); } }
+    @media (prefers-reduced-motion: reduce) {
+      .strike::after { transform: rotate(-1.5deg) scaleX(1); animation: none !important; }
+    }
     /* Slide 15: a loading ring that spins for a second and freezes, like the tutor did */
     .freeze {
       display: inline-block; width: 0.8em; height: 0.8em; margin-left: 0.5em; vertical-align: -0.1em;
@@ -562,10 +573,10 @@
         <li>Reads how you answer: correctness · time · error type</li>
         <li>Learner profile: mastered vs. struggling concepts</li>
         <li>Hint ladder: up to 5 levels, never the solution first</li>
-        <li>Not "next, next, next" through a syllabus</li>
+        <li>Not <span class="strike">"next, next, next"</span> through a syllabus</li>
       </ul>
       <aside class="notes">
-        [12:15-14:00] Signals: correctness, time, error type. Profile: mastered/struggling concepts, success rate, motivation. Hint ladder up to 5 levels (illustrative file-reading example).
+        [12:15-14:00] Signals: correctness, time, error type. Profile: mastered/struggling concepts, success rate, motivation. Hint ladder up to 5 levels (illustrative file-reading example). A thin line crosses out "next, next, next" about a second after the slide appears (no click): say that line while it is drawn.
         Stuck: raises the hint. Success: celebrates. Caution: response time is a noisy signal.
         Short on time: skip the five-level example. Do not claim features that are not live.
       </aside>
