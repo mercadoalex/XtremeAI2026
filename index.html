@@ -198,20 +198,26 @@
       transform: translateX(0); transition: transform 0.9s cubic-bezier(0.16, 0.84, 0.3, 1), opacity 0.5s ease;
     }
     .spark {
-      position: absolute; width: 8px; height: 8px; border-radius: 50%; opacity: 0; pointer-events: none; z-index: 3;
-      /* bright core so it shows against the orange flame, orange halo so it still reads as an ember */
-      background: radial-gradient(circle, #fffbe0 0%, #ffd46a 45%, #ff8a1f 100%);
-      box-shadow: 0 0 9px 3px rgba(255, 140, 30, 0.75);
+      /* a real spark: a thin bright streak with a fading tail, not a round glowing bubble */
+      position: absolute; width: 3px; height: 12px; border-radius: 3px 3px 1px 1px; opacity: 0; pointer-events: none; z-index: 3;
+      background: linear-gradient(to top, rgba(255, 110, 20, 0) 0%, #ff8a1f 45%, #fff6c8 100%);
+      filter: drop-shadow(0 0 2px rgba(255, 150, 40, 0.9));
     }
-    .spark.s1 { left: 52.5%; top: 11%; --dx: -16px; --dy: -78px; --delay: 0s; }
-    .spark.s2 { left: 57%;   top: 14%; --dx: 20px;  --dy: -92px; --delay: 0.8s; }
-    .spark.s3 { left: 47%;   top: 19%; --dx: -24px; --dy: -66px; --delay: 1.5s; }
-    .reveal section.present .spark { animation: spark 2.4s ease-out var(--delay, 0s) infinite; }
+    .spark.s1 { left: 52.5%; top: 11%; --dx: -18px; --dy: -84px; --rot: -12deg; --delay: 0s; }
+    .spark.s2 { left: 57%;   top: 14%; --dx: 24px;  --dy: -96px; --rot: 14deg;  --delay: 0.9s; }
+    .spark.s3 { left: 47%;   top: 19%; --dx: -26px; --dy: -70px; --rot: -20deg; --delay: 1.7s; }
+    /* each spark lives about 1.2 s inside a 3.4 s cycle: quick burst, flicker, wobble, gone */
+    .reveal section.present .spark { animation: spark 3.4s cubic-bezier(0.2, 0.7, 0.4, 1) var(--delay, 0s) infinite; }
     @keyframes spark {
-      0%   { opacity: 0;   transform: translate(0, 0) scale(0.7); }
-      12%  { opacity: 1; }
-      70%  { opacity: 0.95; transform: translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7)) scale(0.85); }
-      100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.45); }
+      0%   { opacity: 0;    transform: translate(0, 0) rotate(var(--rot)) scale(1); }
+      3%   { opacity: 1; }
+      8%   { opacity: 0.45; }
+      12%  { opacity: 1;    transform: translate(calc(var(--dx) * 0.35 + 5px), calc(var(--dy) * 0.4)) rotate(calc(var(--rot) + 14deg)) scale(1); }
+      18%  { opacity: 0.55; }
+      24%  { opacity: 0.95; transform: translate(calc(var(--dx) * 0.7 - 4px), calc(var(--dy) * 0.75)) rotate(calc(var(--rot) - 12deg)) scale(0.85); }
+      35%  { opacity: 0;    transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.45); }
+      36%  { opacity: 0;    transform: translate(0, 0) rotate(var(--rot)) scale(1); }
+      100% { opacity: 0;    transform: translate(0, 0) rotate(var(--rot)) scale(1); }
     }
     @media (prefers-reduced-motion: reduce) { .spark { display: none; } }
     /* Earthquake effect on slide 3 (see the script at the bottom) */
