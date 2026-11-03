@@ -187,6 +187,22 @@
     .cols > .about-photo { position: relative; }
     .illus-row { display: flex; justify-content: center; align-items: center; gap: 1.5em; }
     .illus-row .muted, .illus-row .ai-voice { margin: 0.3em 0 0; }
+    /* Pattern slide: four step cards */
+    .steps { display: flex; align-items: stretch; gap: 0.5rem; margin-top: 0.7em; }
+    .step-card {
+      flex: 1; text-align: center; padding: 0.9em 0.5em;
+      background: rgba(176, 32, 200, 0.07); border: 2px solid rgba(176, 32, 200, 0.35); border-radius: 16px;
+    }
+    .step-card .num {
+      display: inline-flex; align-items: center; justify-content: center; width: 1.7em; height: 1.7em;
+      border-radius: 50%; background: #b020c8; color: #fff; font-weight: 700; font-size: 0.7em;
+    }
+    .reveal .step-card h4 { margin: 0.45em 0 0.25em; font-size: 0.9em; text-transform: none; }
+    .step-card p { font-size: 0.5em; margin: 0; color: #444; line-height: 1.3; }
+    .steps .arrow { align-self: center; color: #b020c8; font-size: 1.1em; font-weight: 700; }
+    /* References in detail (appendix) */
+    .faq .src { margin-top: 0.2em; font-size: 0.9em; }
+    .faq.refs-detail { font-size: 0.54em; gap: 0.4em 2.2rem; margin-top: 0.2em; }
     .cols pre { width: 100%; }
     .cols pre code { font-size: 0.8em; }
   </style>
@@ -541,12 +557,15 @@
     <!-- 15. Pattern for Monday (18:00-19:00) -->
     <section>
       <h3>A pattern you can copy on Monday</h3>
-      <pre><code class="language-text" data-trim>
-1. PREDICT   Ask what they expect to happen.
-2. OBSERVE   Measure what really happened.
-3. COMPARE   Ask what differs, and why.
-4. EXPLAIN   Only now, grounded in the measurement.
-      </code></pre>
+      <div class="steps">
+        <div class="step-card"><span class="num">1</span><h4>Predict</h4><p>Ask what they expect to happen</p></div>
+        <div class="arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card"><span class="num">2</span><h4>Observe</h4><p>Measure what really happened</p></div>
+        <div class="arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card"><span class="num">3</span><h4>Compare</h4><p>Ask what differs, and why</p></div>
+        <div class="arrow" aria-hidden="true">&rarr;</div>
+        <div class="step-card"><span class="num">4</span><h4>Explain</h4><p>Only now, grounded in the measurement</p></div>
+      </div>
       <p class="muted">Works for any technology you can measure.</p>
       <aside class="notes">
         [18:30-19:25] Predict, Observe, Compare, Explain. Slow down: this is the takeaway. Examples: unit tests (which of these 3 tests fails?) and performance (which function is the bottleneck?).
@@ -657,6 +676,47 @@
       <aside class="notes">
         APPENDIX: not part of the talk (the talk ends on the Q&amp;A slide). For people who download the deck.
         Same answers as script.md, section 2. If you have real data, update the last answer before sharing.
+      </aside>
+    </section>
+
+    <!-- 20. Appendix: references in detail (NOT part of the talk, for people who get the deck) -->
+    <section>
+      <h3>References in detail</h3>
+      <p class="muted">Appendix · not part of the talk</p>
+      <div class="faq refs-detail">
+        <div>
+          <p class="q">Chang (2023) · Socratic prompting</p>
+          <p>Prompt templates built on Socratic techniques such as elenchus and maieutics, for more precise and better-justified answers from language models.</p>
+          <p class="src"><a href="https://arxiv.org/abs/2303.08769">arXiv:2303.08769</a></p>
+        </div>
+        <div>
+          <p class="q">Chang (2024) · SocraSynth</p>
+          <p>Two LLM agents argue opposing views under a human moderator, then move from confrontation to collaboration to support better reasoning.</p>
+          <p class="src"><a href="https://arxiv.org/abs/2402.06634">arXiv:2402.06634</a></p>
+        </div>
+        <div>
+          <p class="q">Du et al. (2023) · Multiagent debate</p>
+          <p>Several instances of a model debate over several rounds to reach a common answer, improving reasoning and factuality and reducing hallucinations.</p>
+          <p class="src"><a href="https://arxiv.org/abs/2305.14325">arXiv:2305.14325</a></p>
+        </div>
+        <div>
+          <p class="q">Dhuliawala et al. (2023) · Chain-of-Verification</p>
+          <p>The model drafts an answer, plans verification questions, answers them independently, and writes a verified final response.</p>
+          <p class="src"><a href="https://arxiv.org/abs/2309.11495">arXiv:2309.11495</a></p>
+        </div>
+        <div>
+          <p class="q">Madaan et al. (2023) · Self-Refine</p>
+          <p>A model generates an output, critiques it and refines it in a loop, with no extra training. About 20% average gain reported across 7 tasks.</p>
+          <p class="src"><a href="https://arxiv.org/abs/2303.17651">arXiv:2303.17651</a></p>
+        </div>
+        <div>
+          <p class="q">Paul &amp; Elder (2006) · The Art of Socratic Questioning</p>
+          <p>A practical guide to Socratic questioning for teaching critical thinking: question taxonomies, classroom transcripts and guidelines.</p>
+          <p class="src"><a href="https://www.criticalthinking.org/files/SocraticQuestioning2006.pdf">Free excerpt from the publisher</a></p>
+        </div>
+      </div>
+      <aside class="notes">
+        APPENDIX: not part of the talk (the talk ends on the Q&amp;A slide). For people who download the deck.
       </aside>
     </section>
 
