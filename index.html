@@ -187,6 +187,17 @@
     .cols > .about-photo { position: relative; }
     .illus-row { display: flex; justify-content: center; align-items: center; gap: 1.5em; }
     .illus-row .muted, .illus-row .ai-voice { margin: 0.3em 0 0; }
+    /* Slide 15: a loading ring that spins for a second and freezes, like the tutor did */
+    .freeze {
+      display: inline-block; width: 0.8em; height: 0.8em; margin-left: 0.5em; vertical-align: -0.1em;
+      border: 0.14em solid rgba(176, 32, 200, 0.25); border-top-color: #b020c8; border-radius: 50%; box-sizing: border-box;
+    }
+    .fragment.visible .freeze { animation: freezeSpin 0.9s linear forwards, freezeTint 0.3s ease 0.9s forwards; }
+    @keyframes freezeSpin { from { transform: rotate(0deg); } to { transform: rotate(540deg); } }   /* 1.5 turns, then it stops */
+    @keyframes freezeTint { to { border-color: rgba(120, 110, 130, 0.35); border-top-color: #7a7088; } }  /* greys out: stuck */
+    @media (prefers-reduced-motion: reduce) {
+      .fragment.visible .freeze { animation: none; transform: rotate(180deg); border-color: rgba(120, 110, 130, 0.35); border-top-color: #7a7088; }
+    }
     /* Logo details on the Blaze Platform slide: a few sparks from the flame, and the missing 's' of "dots" */
     .logo-stage { position: relative; width: 380px; }
     .logo-image .tag-s {
@@ -610,10 +621,10 @@
         <li class="fragment">An explainer answers. A tutor asks. They have to be <b>one dialogue</b>.</li>
         <li class="fragment">Response time is a <b>noisy signal</b>.</li>
         <li class="fragment">Running student code is a <b>security problem</b>: sandbox and limits.</li>
-        <li class="fragment"><b>The boring failure:</b> a missing timeout froze our tutor. A frozen tutor teaches nothing.</li>
+        <li class="fragment"><b>The boring failure:</b> a missing timeout froze our tutor. A frozen tutor teaches nothing.<span class="freeze" aria-hidden="true"></span></li>
       </ul>
       <aside class="notes">
-        [16:40-18:30] 5 CLICKS: (1) invented numbers, (2) one dialogue, (3) noisy signal, (4) security of student code, (5) the boring failure.
+        [16:40-18:30] 5 CLICKS: (1) invented numbers, (2) one dialogue, (3) noisy signal, (4) security of student code, (5) the boring failure. Click 5 also shows a small loading ring that spins for a second and freezes: let it sit there while you tell the story.
         Click 5 = your war story (about 45 s): the AI assistant froze whenever the backend was slow. The request had no timeout, the loading flag never switched off, all buttons stayed disabled until a page reload. Fix: time out (about 30 s), reset the state, say clearly the tutor is temporarily unavailable. Add how YOU found it. Full text: script.md, slide 15.
         Short on time: only bullets 1 and 2 and a shorter story.
       </aside>
