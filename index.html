@@ -170,9 +170,9 @@
     @keyframes wave { 0%, 100% { height: 30%; } 50% { height: 100%; } }
     .bubble .wave i { background: #fff; }
     .ai-voice {
-      display: inline-flex; align-items: center; gap: 0.5em; flex-wrap: wrap; justify-content: center;
-      margin-top: 0.8em; padding: 0.45em 1.1em; font-size: 0.7em;
-      background: rgba(176, 32, 200, 0.10); border: 2px solid rgba(176, 32, 200, 0.35); border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 0.45em; flex-wrap: wrap; justify-content: center;
+      margin-top: 0.5em; padding: 0.25em 0.8em; font-size: 0.46em;
+      background: rgba(176, 32, 200, 0.07); border: 1px solid rgba(176, 32, 200, 0.3); border-radius: 999px;
     }
     .ai-tag { font-weight: 700; color: #8a1aa0; }
     .ai-line { font-style: italic; color: #1a1033; }
@@ -181,9 +181,10 @@
     .ai-stack > .ai-voice { grid-area: 1 / 1; }
     .cols > .socrates-photo { position: relative; }
     .ai-voice.on-photo {
-      position: absolute; left: 8px; right: 8px; bottom: 10px; margin: 0; font-size: 0.55em;
-      background: rgba(255, 255, 255, 0.96); box-shadow: 0 4px 14px rgba(60, 20, 120, 0.3);
+      position: absolute; left: 10px; right: 10px; bottom: 10px; margin: 0; font-size: 0.42em;
+      background: rgba(255, 255, 255, 0.95); box-shadow: 0 3px 10px rgba(60, 20, 120, 0.25);
     }
+    .cols > .about-photo { position: relative; }
     .cols pre { width: 100%; }
     .cols pre code { font-size: 0.8em; }
   </style>
@@ -198,20 +199,12 @@
       <h3 class="subtitle">A tale from the trenches</h3>
       <p class="muted">XtremeAI 2026 · November 24, 2026</p>
       <p class="muted">Alejandro Mercado · DevOps &amp; Automation Platform Engineer</p>
-      <div class="ai-stack">
-        <div class="ai-voice fragment fade-in-then-out" data-fragment-index="0">
-          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <span class="ai-tag">AI voice · recorded</span>
-          <span class="ai-line">"Hello. I am an artificial intelligence assistant, and today I will ask questions, offer comments, and accompany Alex during his talk."</span>
-        </div>
-        <div class="ai-voice fragment fade-up" data-fragment-index="1">
-          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <span class="ai-tag">AI voice · recorded</span>
-          <span class="ai-line">"In a nutshell: the system observes, the model interprets, and a tutor poses questions."</span>
-        </div>
+      <div class="ai-voice fragment fade-up">
+        <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="ai-tag">AI voice · recorded</span>
       </div>
       <aside class="notes">
-        [0:00-0:30] Slide 1 of 20. Greet, say the title. 2 CLICKS (recorded video): click 1 = AI clip 1 (the AI introduces itself); click 2 = AI clip 2 (you ask first: "Could you tell them, in a nutshell, what this talk is about?"; the AI answers "Sure. In a nutshell..."). Wait for each clip, answer it, then promise one pattern for Monday.
+        [0:00-0:30] Slide 1 of 20. Greet, say the title. 1 CLICK (recorded video): AI clip 1, the AI introduces itself. Wait for the clip and thank it.
         Full text: script.md.
       </aside>
     </section>
@@ -223,6 +216,10 @@
       <div class="cols about">
         <div class="about-photo">
           <img src="images/headshot.png" alt="Alejandro Mercado">
+          <div class="ai-voice on-photo fragment fade-up">
+            <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            <span class="ai-tag">AI voice · recorded</span>
+          </div>
         </div>
         <div class="about-text">
           <ul>
@@ -234,7 +231,7 @@
         </div>
       </div>
       <aside class="notes">
-        [0:30-1:05] 30 seconds max. Role, 25+ years, IBM Champion, AWS Community Builder, Kiro Ambassador. Why you care: EdTech. This is a personal project.
+        [0:30-1:05] 30 seconds max. Role, 25+ years, IBM Champion, AWS Community Builder, Kiro Ambassador. Why you care: EdTech. This is a personal project. 1 CLICK (recorded video): then ask "Could you tell them, in a nutshell, what this talk is about?" and click: the badge appears on your photo and AI clip 2 answers "Sure. In a nutshell...". Thank it and move on.
         Move on quickly: the audience wants takeaways, not biography.
       </aside>
     </section>
@@ -601,8 +598,13 @@
         &nbsp;·&nbsp;
         <a href="https://alexmarket.medium.com/">alexmarket.medium.com</a>
       </p>
+      <div class="ai-voice fragment fade-up">
+        <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="ai-tag">AI voice · recorded</span>
+        <span class="ai-line">"Thank you for listening. Keep asking good questions."</span>
+      </div>
       <aside class="notes">
-        [20:00-25:00] Keep this slide up during Q&A. Ask the closing question: what question would you want your AI to ask you?
+        [20:00-25:00] Keep this slide up during Q&A. 1 CLICK (recorded video): the AI badge appears with AI clip 10, "Thank you for listening. Keep asking good questions." Clip 9 (the closing question) plays before it, with no click. Ask the closing question: what question would you want your AI to ask you?
         If you don't know an answer, say so and give your best guess. Never say "eliminates hallucinations". Prepared answers: script.md, section 2. Backup question if the chat is quiet: "isn't this just a chatbot?"
       </aside>
     </section>
