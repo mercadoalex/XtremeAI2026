@@ -187,6 +187,30 @@
     .cols > .about-photo { position: relative; }
     .illus-row { display: flex; justify-content: center; align-items: center; gap: 1.5em; }
     .illus-row .muted, .illus-row .ai-voice { margin: 0.3em 0 0; }
+    /* The eBPF bee: a small detail that flies in with the 4th click of the thesis slide */
+    .bee-wrap { position: relative; display: inline-block; width: 0; height: 0; opacity: 0; }
+    .reveal .bee {
+      position: absolute; left: 0.45em; top: -1.05em; width: 1.05em; height: auto; margin: 0; transform: scaleX(-1);
+      max-width: none; max-height: none; border: 0; box-shadow: none; background: none;
+    }
+    .fragment.visible .bee-wrap {
+      animation: beeFly 2.6s cubic-bezier(0.35, 0.6, 0.35, 1) forwards, beeHover 2.4s ease-in-out 2.6s infinite;
+    }
+    @keyframes beeFly {
+      0%   { opacity: 0; transform: translate(520px, -90px) rotate(-14deg) scale(0.75); }
+      12%  { opacity: 1; }
+      35%  { transform: translate(300px, 22px) rotate(8deg) scale(0.9); }
+      60%  { transform: translate(120px, -26px) rotate(-7deg) scale(1); }
+      82%  { transform: translate(30px, 6px) rotate(4deg) scale(1); }
+      100% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+    }
+    @keyframes beeHover {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50%      { transform: translate(2px, -5px) rotate(3deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .fragment.visible .bee-wrap { animation: none; opacity: 1; }
+    }
     /* Pattern slide: four step cards */
     .steps { display: flex; align-items: stretch; gap: 0.5rem; margin-top: 0.7em; }
     .step-card {
@@ -398,7 +422,7 @@
       <ul class="left">
         <li class="fragment" data-fragment-index="0"><b>Observe</b> it, with <b>eBPF</b>.</li>
         <li class="fragment" data-fragment-index="2">Let the model <b>interpret</b> it.</li>
-        <li class="fragment" data-fragment-index="3">Let a tutor <b>ask</b> about it.</li>
+        <li class="fragment" data-fragment-index="3">Let a tutor <b>ask</b> about it.<span class="bee-wrap" aria-hidden="true"><img class="bee" src="images/bee_clean.png" alt=""></span></li>
       </ul>
       <div class="ebpf-card fragment slide-in-right" data-fragment-index="1">
         <p class="ebpf-title">eBPF <span>Extended Berkeley Packet Filter</span></p>
@@ -406,7 +430,7 @@
         kernel context without modifying kernel source code or loading kernel modules.</p>
       </div>
       <aside class="notes">
-        [7:40-8:40] 4 CLICKS: (1) Observe it, with eBPF. (2) the eBPF card slides in from the right: one plain sentence, do not read it. (3) interpret. (4) ask.
+        [7:40-8:40] 4 CLICKS: (1) Observe it, with eBPF. (2) the eBPF card slides in from the right: one plain sentence, do not read it. (3) interpret. (4) ask: a small bee (the eBPF mascot) flies in next to the line.
         Key line: "Observe, interpret, ask. Everything else is one of these three verbs."
       </aside>
     </section>
