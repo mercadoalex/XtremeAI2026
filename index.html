@@ -100,7 +100,7 @@
     }
     .cols > .logo-image { flex: 0 0 380px; }
     .logo-image img {
-      display: block; width: 380px; height: auto; margin: 0;
+      display: block; width: 380px; max-width: none; height: auto; margin: 0;
       mix-blend-mode: multiply;   /* the logo's off-white background blends into the white panel */
     }
     /* Two aligned columns: heading and bullets share the same left edge, thin divider between columns */
@@ -187,6 +187,33 @@
     .cols > .about-photo { position: relative; }
     .illus-row { display: flex; justify-content: center; align-items: center; gap: 1.5em; }
     .illus-row .muted, .illus-row .ai-voice { margin: 0.3em 0 0; }
+    /* Logo details on the Blaze Platform slide: a few sparks from the flame, and the missing 's' of "dots" */
+    .logo-stage { position: relative; width: 380px; }
+    .logo-image .tag-s {
+      position: absolute; left: 96.41%; top: 91.90%; width: 2.44%; height: auto;
+      margin: 0; max-width: none; mix-blend-mode: normal; border: 0; box-shadow: none; background: none;
+    }
+    .reveal .logo-image .tag-s.fragment { transform: translateX(130px); }
+    .reveal .logo-image .tag-s.fragment.visible {
+      transform: translateX(0); transition: transform 0.9s cubic-bezier(0.16, 0.84, 0.3, 1), opacity 0.5s ease;
+    }
+    .spark {
+      position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; pointer-events: none;
+      background: #ffb23e; box-shadow: 0 0 7px 2px rgba(255, 140, 30, 0.7);
+    }
+    .spark.s1 { left: 52.2%; top: 10.3%; --dx: -12px; --dy: -42px; animation-delay: 0s; }
+    .spark.s2 { left: 56.7%; top: 12.3%; --dx: 16px; --dy: -54px; animation-delay: 0.9s; }
+    .spark.s3 { left: 46.2%; top: 18.3%; --dx: -18px; --dy: -36px; animation-delay: 1.7s; }
+    .reveal section.present .spark { animation: spark 2.6s ease-out infinite; }
+    @keyframes spark {
+      0%   { opacity: 0;   transform: translate(0, 0) scale(0.6); }
+      18%  { opacity: 0.95; }
+      100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.2); }
+    }
+    @media (prefers-reduced-motion: reduce) { .spark { display: none; } }
+    /* Earthquake effect on slide 3 (see the script at the bottom) */
+    .quake { display: inline-block; transition: color 0.3s ease; will-change: transform; }
+    .quake.quaking { color: #b020c8; }
     /* The eBPF bee: a small detail that flies in with the 4th click of the thesis slide */
     .bee-wrap { position: relative; display: inline-block; width: 0; height: 0; opacity: 0; }
     .reveal .bee {
@@ -280,9 +307,10 @@
 
     <!-- 3. Glass house (1:00-1:45) -->
     <section data-auto-animate>
-      <h2>Would you build a glass house<br>during an 8.0 earthquake?</h2>
+      <h2>Would you build a glass house<br>during an <span class="quake">8.0 earthquake</span>?</h2>
+      <span class="fragment quake-trigger" aria-hidden="true"></span>
       <aside class="notes">
-        [1:05-1:45] Ask the question, then PAUSE 3 seconds. Do not fill the silence.
+        [1:05-1:45] Ask the question, then PAUSE 3 seconds. Do not fill the silence. 1 CLICK: the words "8.0 earthquake" shake for about 3 seconds (earthquake effect). Click, then stay silent and let it land.
         "You can't build something fragile on a ground that moves." Optional chat prompt: worst hallucination you have seen.
       </aside>
     </section>
@@ -406,11 +434,15 @@
           </p>
         </div>
         <div class="logo-image">
-          <img src="images/blazeplatform_logo_cropped.png" alt="Blaze Platform logo">
+          <div class="logo-stage">
+            <img src="images/blazeplatform_logo_cropped.png" alt="Blaze Platform logo">
+            <i class="spark s1" aria-hidden="true"></i><i class="spark s2" aria-hidden="true"></i><i class="spark s3" aria-hidden="true"></i>
+            <img class="tag-s fragment" src="images/tag_s.png" alt="" aria-hidden="true">
+          </div>
         </div>
       </div>
       <aside class="notes">
-        [6:15-7:40] Started as an eBPF platform (write, compile, run, guided exercises). Then generalized: agnostic to the technology. Verticals: eBPF, COBOL, Fortran, more. Shared contract: observation, learner profile, tutor.
+        [6:15-7:40] Started as an eBPF platform (write, compile, run, guided exercises). Then generalized: agnostic to the technology. Verticals: eBPF, COBOL, Fortran, more. Shared contract: observation, learner profile, tutor. 1 CLICK: the missing 's' slides in from the right and completes "dots" (the logo tagline had a typo: play it as intentional). Tiny sparks rise from the flame on their own.
         Say: work in progress, NOT production ready yet. Only public names: no hosts, IPs or bucket names.
         TODO: fix the logo tagline ("...these dots").
       </aside>
@@ -769,6 +801,36 @@
   if (new URLSearchParams(location.search).has('rec')) {
     Reveal.configure({ controls: false, progress: false, slideNumber: false });
   }
+
+  // Earthquake effect (slide 3): on the click, the words "8.0 earthquake" shake and the card rumbles slightly.
+  const PANEL_SHAKE = 0.25;   // 0 = shake only the words; 1 = shake the whole card as much as the words
+  let quakeFrame = null;
+  function stopQuake() {
+    cancelAnimationFrame(quakeFrame); quakeFrame = null;
+    document.querySelectorAll('.quake').forEach(el => { el.style.transform = ''; el.classList.remove('quaking'); });
+    document.querySelectorAll('.reveal .slides section').forEach(s => { s.style.translate = ''; });
+  }
+  function startQuake(section) {
+    stopQuake();
+    const words = section.querySelector('.quake');
+    if (!words) return;
+    words.classList.add('quaking');                                   // turns purple and stays
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // respect reduced motion
+    const DURATION = 3400, t0 = performance.now();
+    const frame = (now) => {
+      const p = (now - t0) / DURATION;
+      if (p >= 1) { words.style.transform = ''; section.style.translate = ''; quakeFrame = null; return; }
+      const k = Math.min(1, p / 0.06) * Math.pow(1 - p, 1.6);        // violent at once, then aftershocks fade
+      const r = () => Math.random() * 2 - 1;
+      words.style.transform = `translate(${r() * 12 * k}px, ${r() * 8 * k}px) rotate(${r() * 3.5 * k}deg)`;
+      section.style.translate = `${r() * 8 * k * PANEL_SHAKE}px ${r() * 6 * k * PANEL_SHAKE}px`;
+      quakeFrame = requestAnimationFrame(frame);
+    };
+    quakeFrame = requestAnimationFrame(frame);
+  }
+  Reveal.on('fragmentshown', e => { if (e.fragment.classList.contains('quake-trigger')) startQuake(e.fragment.closest('section')); });
+  Reveal.on('fragmenthidden', e => { if (e.fragment.classList.contains('quake-trigger')) stopQuake(); });
+  Reveal.on('slidechanged', stopQuake);
 
   Reveal.on('ready', syncIntro);
   Reveal.on('slidechanged', syncIntro);
