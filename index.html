@@ -157,6 +157,33 @@
     }
     .refs-cover .credit { font-size: 0.4em; color: #555; margin: 0.6em 0 0; }
     .reflink { font-size: 0.6em; margin: 0.8em 0 0; text-align: center; }
+    /* Appendix: frequently asked questions, two columns */
+    .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em 2.2rem; text-align: left; font-size: 0.6em; margin-top: 0.4em; }
+    .faq p { margin: 0.15em 0 0; line-height: 1.3; }
+    .faq .q { font-weight: 700; color: #8a1aa0; margin-top: 0; }
+    /* AI voice component: animated sound wave + short caption, revealed on a click when a recorded AI clip plays */
+    .wave { display: inline-flex; align-items: flex-end; gap: 3px; height: 1.1em; margin-right: 0.6em; vertical-align: middle; }
+    .wave i { display: block; width: 4px; height: 35%; background: #b020c8; border-radius: 2px; animation: wave 0.9s ease-in-out infinite; }
+    .wave i:nth-child(2) { animation-delay: 0.15s; }
+    .wave i:nth-child(3) { animation-delay: 0.3s; }
+    .wave i:nth-child(4) { animation-delay: 0.45s; }
+    @keyframes wave { 0%, 100% { height: 30%; } 50% { height: 100%; } }
+    .bubble .wave i { background: #fff; }
+    .ai-voice {
+      display: inline-flex; align-items: center; gap: 0.5em; flex-wrap: wrap; justify-content: center;
+      margin-top: 0.8em; padding: 0.45em 1.1em; font-size: 0.7em;
+      background: rgba(176, 32, 200, 0.10); border: 2px solid rgba(176, 32, 200, 0.35); border-radius: 999px;
+    }
+    .ai-tag { font-weight: 700; color: #8a1aa0; }
+    .ai-line { font-style: italic; color: #1a1033; }
+    /* Stack of AI badges: they share the same spot, so one replaces the other without leaving a gap */
+    .ai-stack { display: grid; justify-items: center; }
+    .ai-stack > .ai-voice { grid-area: 1 / 1; }
+    .cols > .socrates-photo { position: relative; }
+    .ai-voice.on-photo {
+      position: absolute; left: 8px; right: 8px; bottom: 10px; margin: 0; font-size: 0.55em;
+      background: rgba(255, 255, 255, 0.96); box-shadow: 0 4px 14px rgba(60, 20, 120, 0.3);
+    }
     .cols pre { width: 100%; }
     .cols pre code { font-size: 0.8em; }
   </style>
@@ -171,8 +198,20 @@
       <h3 class="subtitle">A tale from the trenches</h3>
       <p class="muted">XtremeAI 2026 · November 24, 2026</p>
       <p class="muted">Alejandro Mercado · DevOps &amp; Automation Platform Engineer</p>
+      <div class="ai-stack">
+        <div class="ai-voice fragment fade-in-then-out" data-fragment-index="0">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+          <span class="ai-line">"Hello. I am an artificial intelligence assistant, and today I will ask questions, offer comments, and accompany Alex during his talk."</span>
+        </div>
+        <div class="ai-voice fragment fade-up" data-fragment-index="1">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+          <span class="ai-line">"In a nutshell: the system observes, the model interprets, and a tutor poses questions."</span>
+        </div>
+      </div>
       <aside class="notes">
-        [0:00-0:30] Slide 1 of 19. Greet, say the title, promise one pattern for Monday. Smile, look at the camera, speak slowly.
+        [0:00-0:30] Slide 1 of 20. Greet, say the title. 2 CLICKS (recorded video): click 1 = AI clip 1 (the AI introduces itself); click 2 = AI clip 2 (you ask first: "Could you tell them, in a nutshell, what this talk is about?"; the AI answers "Sure. In a nutshell..."). Wait for each clip, answer it, then promise one pattern for Monday.
         Full text: script.md.
       </aside>
     </section>
@@ -213,12 +252,24 @@
     <section>
       <h3>The weight of distrust</h3>
       <ul>
-        <li class="fragment">You know what it feels like to build on uncertain foundations</li>
-        <li class="fragment">One hallucination can ruin a critical deployment</li>
-        <li class="fragment">That fear is not a flaw. It is a logical response to a technology that often prioritizes <b>fluency over truth</b>.</li>
+        <li class="fragment" data-fragment-index="0">You know what it feels like to build on uncertain foundations</li>
+        <li class="fragment" data-fragment-index="2">One hallucination can ruin a critical deployment</li>
+        <li class="fragment" data-fragment-index="3">That fear is not a flaw. It is a logical response to a technology that often prioritizes <b>fluency over truth</b>.</li>
       </ul>
+      <div class="ai-stack">
+        <div class="ai-voice fragment fade-in-then-out" data-fragment-index="1">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+          <span class="ai-line">"Do you know of any instance of an AI hallucination that has surprised you?"</span>
+        </div>
+        <div class="ai-voice fragment fade-up" data-fragment-index="4">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+          <span class="ai-line">"Why is this dangerous? Because hallucinations that are fluent are harder to catch."</span>
+        </div>
+      </div>
       <aside class="notes">
-        [1:45-2:40] 3 CLICKS, one per bullet. Example for the first: an API that doesn't exist, a flag that was never in the docs.
+        [1:45-2:40] 5 CLICKS (recorded video): (1) bullet 1, (2) AI clip 3 asks the audience about a hallucination that surprised them (pause 4 s), (3) bullet 2, (4) bullet 3, (5) AI clip 4: "Why is this dangerous? Because hallucinations that are fluent are harder to catch." Example for the first bullet: an API that doesn't exist, a flag that was never in the docs.
         Slow down on "fluency over truth" (purple). Close with: how do we build something we can trust?
       </aside>
     </section>
@@ -239,6 +290,11 @@
       <div class="cols socrates-slide">
         <div class="socrates-photo">
           <img src="images/socrates.jpg" alt="Statue of Socrates">
+          <div class="ai-voice on-photo fragment fade-up">
+            <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+            <span class="ai-tag">AI voice · recorded</span>
+            <span class="ai-line">"How do you know that?"</span>
+          </div>
         </div>
         <div class="socrates-text">
           <p class="lead">Learn by answering questions, not by receiving answers.</p>
@@ -252,7 +308,7 @@
         </div>
       </div>
       <aside class="notes">
-        [3:35-4:55] Socrates, more than 2,000 years ago, a midwife of ideas. Name two or three question types, then land on EVIDENCE (highlighted): "How do you know that?"
+        [3:35-4:55] Socrates, more than 2,000 years ago, a midwife of ideas. Name two or three question types, then land on EVIDENCE (highlighted). 1 CLICK: the AI badge appears on the statue and AI clip 2 asks "How do you know that?" (recorded video).
         Example: "my program is slow" - did you measure it? Keep this question for the whole talk.
         Short on time: skip the list of types.
         BEFORE PUBLISHING: confirm license/credit of images/socrates.jpg.
@@ -447,14 +503,14 @@
     <!-- 13. Example dialogue (14:30-16:00) -->
     <section>
       <h3>What it looks like</h3>
-      <div class="bubble student"><b>Student:</b> My program is slow when it reads the file.</div>
-      <div class="bubble tutor"><b>Tutor:</b> How many times do you think it asks the kernel to read?</div>
-      <div class="bubble student"><b>Student:</b> A few dozen?</div>
-      <div class="bubble obs">measured: read called 1,200 times, 1 byte each</div>
-      <div class="bubble tutor"><b>Tutor:</b> What does that say about how the file is being read?</div>
+      <div class="bubble student fragment fade-up"><b>Student:</b> My program is slow when it reads the file.</div>
+      <div class="bubble tutor fragment fade-up"><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>Tutor (AI voice):</b> How many times do you think your program asks the kernel to read?</div>
+      <div class="bubble student fragment fade-up"><b>Student:</b> A few dozen?</div>
+      <div class="bubble obs fragment fade-up">measured: read called 1,200 times, 1 byte each</div>
+      <div class="bubble tutor fragment fade-up"><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>Tutor (AI voice):</b> What does that say about how the file is being read?</div>
       <p class="muted">Illustrative example.</p>
       <aside class="notes">
-        [15:10-16:40] Two voices: student and tutor. After "a few dozen?" invite the audience to guess in the chat: PAUSE 5 seconds (this is the predict step, live).
+        [15:10-16:40] 5 CLICKS, one per bubble. Recorded version: you are the student; the tutor lines are AI clips 3 and 4 (clicks 2 and 5). After "a few dozen?" invite the audience to guess in the chat: PAUSE 5 seconds (this is the predict step, live).
         Then the measured fact (1,200 calls, 1 byte each), the tutor's question, and the optional "What changed, and why?". ILLUSTRATIVE: say so, or replace with a real anonymized transcript.
       </aside>
     </section>
@@ -551,6 +607,42 @@
       </aside>
     </section>
 
+    <!-- 19. Appendix: frequently asked questions (NOT part of the talk, for people who get the deck) -->
+    <section>
+      <h3>Frequently asked questions</h3>
+      <p class="muted">Appendix · not part of the talk</p>
+      <div class="faq">
+        <div>
+          <p class="q">How do you stop the tutor from giving away the answer?</p>
+          <p>A hint ladder of up to five levels, escalating with each attempt. The full solution is the last level, never the first.</p>
+        </div>
+        <div>
+          <p class="q">Does the model still hallucinate?</p>
+          <p>It can. Observation grounds the facts, but the explanation still comes from a model. So it cites only measured figures, labels estimates, and asks when data is missing.</p>
+        </div>
+        <div>
+          <p class="q">Is it safe to run student code?</p>
+          <p>Student code runs in a sandbox with namespaces and resource limits for memory, CPU and disk, and with bounded concurrency.</p>
+        </div>
+        <div>
+          <p class="q">Which model do you use?</p>
+          <p>The one available through Amazon Bedrock. We have not compared alternatives yet, and the pattern does not depend on the model.</p>
+        </div>
+        <div>
+          <p class="q">Does it work beyond eBPF?</p>
+          <p>That is the idea. COBOL and Fortran verticals share the same contract for observation, learner profile and tutor.</p>
+        </div>
+        <div>
+          <p class="q">Is it ready to use? Any results?</p>
+          <p>Not yet. It is a work in progress, not production ready, and we have not run a controlled evaluation. We want to measure whether learners need fewer hints over time.</p>
+        </div>
+      </div>
+      <aside class="notes">
+        APPENDIX: not part of the talk (the talk ends on the Q&amp;A slide). For people who download the deck.
+        Same answers as script.md, section 2. If you have real data, update the last answer before sharing.
+      </aside>
+    </section>
+
   </div>
 </div>
 
@@ -572,6 +664,11 @@
     const { h, v } = Reveal.getIndices();
     document.body.classList.toggle('intro', h === 0 && v === 0);
   }
+  // Recording mode: open the deck with ?rec to hide the arrows, progress bar and slide number
+  if (new URLSearchParams(location.search).has('rec')) {
+    Reveal.configure({ controls: false, progress: false, slideNumber: false });
+  }
+
   Reveal.on('ready', syncIntro);
   Reveal.on('slidechanged', syncIntro);
 </script>

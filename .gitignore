@@ -16,3 +16,6 @@ images/blazeplatform_logo_whitebackground.png
 # OS noise
 .DS_Store
 **/.DS_Store
+
+# Recording version of the script (internal)
+script_voice.md
