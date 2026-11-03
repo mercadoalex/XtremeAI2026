@@ -198,17 +198,20 @@
       transform: translateX(0); transition: transform 0.9s cubic-bezier(0.16, 0.84, 0.3, 1), opacity 0.5s ease;
     }
     .spark {
-      position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; pointer-events: none;
-      background: #ffb23e; box-shadow: 0 0 7px 2px rgba(255, 140, 30, 0.7);
+      position: absolute; width: 8px; height: 8px; border-radius: 50%; opacity: 0; pointer-events: none; z-index: 3;
+      /* bright core so it shows against the orange flame, orange halo so it still reads as an ember */
+      background: radial-gradient(circle, #fffbe0 0%, #ffd46a 45%, #ff8a1f 100%);
+      box-shadow: 0 0 9px 3px rgba(255, 140, 30, 0.75);
     }
-    .spark.s1 { left: 52.2%; top: 10.3%; --dx: -12px; --dy: -42px; animation-delay: 0s; }
-    .spark.s2 { left: 56.7%; top: 12.3%; --dx: 16px; --dy: -54px; animation-delay: 0.9s; }
-    .spark.s3 { left: 46.2%; top: 18.3%; --dx: -18px; --dy: -36px; animation-delay: 1.7s; }
-    .reveal section.present .spark { animation: spark 2.6s ease-out infinite; }
+    .spark.s1 { left: 52.5%; top: 11%; --dx: -16px; --dy: -78px; --delay: 0s; }
+    .spark.s2 { left: 57%;   top: 14%; --dx: 20px;  --dy: -92px; --delay: 0.8s; }
+    .spark.s3 { left: 47%;   top: 19%; --dx: -24px; --dy: -66px; --delay: 1.5s; }
+    .reveal section.present .spark { animation: spark 2.4s ease-out var(--delay, 0s) infinite; }
     @keyframes spark {
-      0%   { opacity: 0;   transform: translate(0, 0) scale(0.6); }
-      18%  { opacity: 0.95; }
-      100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.2); }
+      0%   { opacity: 0;   transform: translate(0, 0) scale(0.7); }
+      12%  { opacity: 1; }
+      70%  { opacity: 0.95; transform: translate(calc(var(--dx) * 0.7), calc(var(--dy) * 0.7)) scale(0.85); }
+      100% { opacity: 0;   transform: translate(var(--dx), var(--dy)) scale(0.45); }
     }
     @media (prefers-reduced-motion: reduce) { .spark { display: none; } }
     /* Earthquake effect on slide 3 (see the script at the bottom) */
