@@ -185,6 +185,8 @@
       background: rgba(255, 255, 255, 0.95); box-shadow: 0 3px 10px rgba(60, 20, 120, 0.25);
     }
     .cols > .about-photo { position: relative; }
+    .illus-row { display: flex; justify-content: center; align-items: center; gap: 1.5em; }
+    .illus-row .muted, .illus-row .ai-voice { margin: 0.3em 0 0; }
     .cols pre { width: 100%; }
     .cols pre code { font-size: 0.8em; }
   </style>
@@ -505,9 +507,16 @@
       <div class="bubble student fragment fade-up"><b>Student:</b> A few dozen?</div>
       <div class="bubble obs fragment fade-up">measured: read called 1,200 times, 1 byte each</div>
       <div class="bubble tutor fragment fade-up"><span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>Tutor (AI voice):</b> What does that say about how the file is being read?</div>
-      <p class="muted">Illustrative example.</p>
+      <div class="illus-row">
+        <p class="muted">Illustrative example.</p>
+        <div class="ai-voice fragment fade-up">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+          <span class="ai-line">"What changed, and why?"</span>
+        </div>
+      </div>
       <aside class="notes">
-        [15:10-16:40] 5 CLICKS, one per bubble. Recorded version: you are the student; the tutor lines are AI clips 3 and 4 (clicks 2 and 5). After "a few dozen?" invite the audience to guess in the chat: PAUSE 5 seconds (this is the predict step, live).
+        [15:10-16:40] 6 CLICKS: five bubbles plus the small badge of the optional clip 8. Recorded version: you are the student; the tutor lines are AI clips 6 and 7 (clicks 2 and 5); click 6 = clip 8 "What changed, and why?". After "a few dozen?" invite the audience to guess in the chat: PAUSE 5 seconds (this is the predict step, live).
         Then the measured fact (1,200 calls, 1 byte each), the tutor's question, and the optional "What changed, and why?". ILLUSTRATIVE: say so, or replace with a real anonymized transcript.
       </aside>
     </section>
@@ -598,13 +607,19 @@
         &nbsp;·&nbsp;
         <a href="https://alexmarket.medium.com/">alexmarket.medium.com</a>
       </p>
-      <div class="ai-voice fragment fade-up">
-        <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        <span class="ai-tag">AI voice · recorded</span>
-        <span class="ai-line">"Thank you for listening. Keep asking good questions."</span>
+      <div class="ai-stack">
+        <div class="ai-voice fragment fade-in-then-out" data-fragment-index="0">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+        </div>
+        <div class="ai-voice fragment fade-up" data-fragment-index="1">
+          <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="ai-tag">AI voice · recorded</span>
+          <span class="ai-line">"Thank you for listening. Keep asking good questions."</span>
+        </div>
       </div>
       <aside class="notes">
-        [20:00-25:00] Keep this slide up during Q&A. 1 CLICK (recorded video): the AI badge appears with AI clip 10, "Thank you for listening. Keep asking good questions." Clip 9 (the closing question) plays before it, with no click. Ask the closing question: what question would you want your AI to ask you?
+        [20:00-25:00] Keep this slide up during Q&A. 2 CLICKS (recorded video): click 1 = badge + AI clip 9 (the closing question); click 2 = the badge is replaced and AI clip 10 plays, "Thank you for listening. Keep asking good questions." Ask the closing question: what question would you want your AI to ask you?
         If you don't know an answer, say so and give your best guess. Never say "eliminates hallucinations". Prepared answers: script.md, section 2. Backup question if the chat is quiet: "isn't this just a chatbot?"
       </aside>
     </section>
