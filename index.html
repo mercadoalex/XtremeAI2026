@@ -179,6 +179,22 @@
     /* Stack of AI badges: they share the same spot, so one replaces the other without leaving a gap */
     .ai-stack { display: grid; justify-items: center; }
     .ai-stack > .ai-voice { grid-area: 1 / 1; }
+    /* Slide 4: when the "fluent hallucinations" badge appears, it trips: rotating fractal spirals, shifting hues, pulsing */
+    .ai-voice.trip {
+      position: relative; isolation: isolate;
+      background: rgba(20, 0, 45, 0.65); border-color: #ff4fd8;
+      animation: trip-hue 6s linear infinite, trip-pulse 2.2s ease-in-out infinite;
+    }
+    .ai-voice.trip .ai-tag, .ai-voice.trip .ai-line { color: #fff; text-shadow: 0 0 6px rgba(0, 0, 0, 0.8); }
+    .ai-voice.trip .wave i { background: #fff; }
+    .trip-canvas {
+      position: absolute; left: 50%; top: 50%; width: 1000px; height: 300px; translate: -50% -50%;
+      z-index: -1; pointer-events: none;
+      -webkit-mask-image: radial-gradient(ellipse at center, #000 45%, transparent 72%);
+      mask-image: radial-gradient(ellipse at center, #000 45%, transparent 72%);
+    }
+    @keyframes trip-hue { from { filter: hue-rotate(0deg) saturate(1.6); } to { filter: hue-rotate(360deg) saturate(1.6); } }
+    @keyframes trip-pulse { 0%, 100% { scale: 1; } 50% { scale: 1.07; } }
     .cols > .socrates-photo { position: relative; }
     .ai-voice.on-photo {
       position: absolute; left: 10px; right: 10px; bottom: 10px; margin: 0; font-size: 0.42em;
@@ -360,14 +376,15 @@
           <span class="ai-tag">AI voice · recorded</span>
           <span class="ai-line">"Do you know of any instance of an AI hallucination that has surprised you?"</span>
         </div>
-        <div class="ai-voice fragment fade-up" data-fragment-index="4">
+        <div class="ai-voice fragment fade-up trip-target" data-fragment-index="4">
           <span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           <span class="ai-tag">AI voice · recorded</span>
           <span class="ai-line">"Why is this dangerous? Because hallucinations that are fluent are harder to catch."</span>
         </div>
       </div>
+      <span class="fragment trip-trigger" data-fragment-index="5" aria-hidden="true"></span>
       <aside class="notes">
-        [1:45-2:40] 5 CLICKS (recorded video): (1) bullet 1, (2) AI clip 3 asks the audience about a hallucination that surprised them (pause 4 s), (3) bullet 2, (4) bullet 3, (5) AI clip 4: "Why is this dangerous? Because hallucinations that are fluent are harder to catch." Example for the first bullet: an API that doesn't exist, a flag that was never in the docs.
+        [1:45-2:40] 6 CLICKS (recorded video): (1) bullet 1, (2) AI clip 3 asks the audience about a hallucination that surprised them (pause 4 s), (3) bullet 2, (4) bullet 3, (5) AI clip 4: "Why is this dangerous? Because hallucinations that are fluent are harder to catch." (6) a few seconds later, the badge trips (psychedelic spirals): the hallucination effect. Example for the first bullet: an API that doesn't exist, a flag that was never in the docs.
         Slow down on "fluency over truth" (purple). Close with: how do we build something we can trust?
       </aside>
     </section>
@@ -862,6 +879,65 @@
   Reveal.on('fragmentshown', e => { if (e.fragment.classList.contains('quake-trigger')) startQuake(e.fragment.closest('section')); });
   Reveal.on('fragmenthidden', e => { if (e.fragment.classList.contains('quake-trigger')) stopQuake(); });
   Reveal.on('slidechanged', stopQuake);
+
+  // Psychedelic badge (slide 4): on the click that shows the "fluent hallucinations" badge, it fills with
+  // rotating fractal spirals (spirals that sprout smaller counter-rotating spirals) drawn on a canvas behind the text.
+  let tripFrame = null;
+  function stopTrip() {
+    cancelAnimationFrame(tripFrame); tripFrame = null;
+    document.querySelectorAll('.ai-voice.trip').forEach(b => {
+      b.classList.remove('trip');
+      b.querySelectorAll('.trip-canvas').forEach(c => c.remove());
+    });
+  }
+  function spiral(ctx, x, y, r, rot, depth, hue) {
+    const arms = 3, steps = depth === 2 ? 70 : depth === 1 ? 36 : 24, turns = 2.6;
+    const tips = depth === 2 ? [0.5, 0.8, 1] : depth === 1 ? [1] : [];
+    ctx.lineWidth = depth === 2 ? 2.6 : depth === 1 ? 1.8 : 1.2;
+    for (let a = 0; a < arms; a++) {
+      const base = rot + a * 2 * Math.PI / arms;
+      ctx.strokeStyle = `hsl(${(hue + a * 55) % 360}, 100%, 60%)`;
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps, ang = base + t * turns * 2 * Math.PI;
+        const px = x + Math.cos(ang) * r * t, py = y + Math.sin(ang) * r * t;
+        i ? ctx.lineTo(px, py) : ctx.moveTo(px, py);
+      }
+      ctx.stroke();
+      for (const t of tips) {                                       // each arm sprouts smaller spirals, spinning the other way
+        const ang = base + t * turns * 2 * Math.PI;
+        spiral(ctx, x + Math.cos(ang) * r * t, y + Math.sin(ang) * r * t, r * 0.3, -rot * 1.8 + a, depth - 1, hue + 70);
+      }
+    }
+  }
+  function startTrip(badge) {
+    stopTrip();
+    badge.classList.add('trip');
+    const canvas = document.createElement('canvas');
+    canvas.className = 'trip-canvas'; canvas.width = 1000; canvas.height = 300;
+    canvas.setAttribute('aria-hidden', 'true');
+    badge.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    const draw = (now) => {
+      ctx.clearRect(0, 0, 1000, 300);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.lineCap = 'round';
+      const pulse = 1 + 0.12 * Math.sin(now / 450), hue = now / 12;
+      spiral(ctx, 500, 150, 135 * pulse, now / 1400, 2, hue);
+      spiral(ctx, 190, 150, 105 * pulse, -now / 1100, 2, hue + 120);
+      spiral(ctx, 810, 150, 105 * pulse, -now / 1250, 2, hue + 240);
+    };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { draw(0); return; }   // one still frame
+    const loop = (now) => { draw(now); tripFrame = requestAnimationFrame(loop); };
+    tripFrame = requestAnimationFrame(loop);
+  }
+  Reveal.on('fragmentshown', e => {
+    if (!e.fragment.classList.contains('trip-trigger')) return;
+    const badge = e.fragment.closest('section').querySelector('.trip-target');
+    if (badge) startTrip(badge);
+  });
+  Reveal.on('fragmenthidden', e => { if (e.fragment.classList.contains('trip-trigger')) stopTrip(); });
+  Reveal.on('slidechanged', stopTrip);
 
   Reveal.on('ready', syncIntro);
   Reveal.on('slidechanged', syncIntro);
